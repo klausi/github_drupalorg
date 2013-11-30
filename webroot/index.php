@@ -1,3 +1,5 @@
 <?php
 
-file_put_contents('/home/klausi/temp.txt', print_r($_POST, TRUE) . "\n\n", FILE_APPEND);
+require '../settings.php';
+
+file_put_contents($logfile, print_r(json_decode($_POST['payload']), TRUE) . "\n\n", FILE_APPEND);
