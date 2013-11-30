@@ -1,0 +1,10 @@
+{
+    "name": "klausi/github_drupalorg",
+    "type": "application",
+    "description": "Synchronization of github pull requests to drupal.org",
+    "keywords": ["scraper"],
+    "license": "GPLv2+",
+    "require": {
+        "fabpot/goutte": "*"
+    }
+}

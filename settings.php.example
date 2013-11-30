@@ -1,0 +1,9 @@
+<?php
+
+// Copy this file to settings.php and adjust to your repository/username.
+
+$owner = 'klausi';
+$password = 'not that';
+$repo = 'test';
+$webhook_url = 'http://example.com/index.php';
+$secret = 'secret_test';
