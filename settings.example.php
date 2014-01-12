@@ -14,3 +14,9 @@ $repo = 'drupal';
 $webhook_url = 'http://example.com/index.php';
 // Secret to validate incoming webhook requests (you can invent one).
 $secret = 'change me, otherwise you have a security issue!';
+
+// Your drupal.org user name which should be used to post patches and update
+// issues.
+$drupal_user = 'klausi';
+// Your drupal.org password.
+$drupal_password = 'secret';
