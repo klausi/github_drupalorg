@@ -1,6 +1,7 @@
 <?php
 
 use Goutte\Client;
+use Guzzle\Http\Client as GuzzleClient;
 
 require 'vendor/autoload.php';
 
@@ -62,4 +63,28 @@ function post_comment($issue_id, $comment, $patch) {
 function logger($message) {
   global $logfile;
   file_put_contents($logfile, date("Y-m-d H:i:s") . "  $message\n", FILE_APPEND);
+}
+
+/**
+ * Downloads a URL to a local temporary file.
+ *
+ * @param string $url
+ *   The URL.
+ * @param string $file_name
+ *   The local file name where this should be stored, without path prefix.
+ *
+ * @return string
+ *   Absolute path to the tempory file.
+ */
+function download_file($url, $file_name) {
+  // Create a temporary directory.
+  $temp_file = tempnam(sys_get_temp_dir(), 'github_drupalorg_');
+  unlink($temp_file);
+  mkdir($temp_file);
+
+  $client = new GuzzleClient();
+  $response = $client->get($url)->send();
+  $path = "$temp_file/$file_name";
+  file_put_contents($path, $response->getBody());
+  return $path;
 }
