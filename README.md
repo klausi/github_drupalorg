@@ -27,3 +27,9 @@ Usage
 -----
 
 * Create a Pull Request against your own fork of Drupal on Github.
+
+Hacked vendor directory
+-----------------------
+
+Unfortunately I had to hack Symfony's BrowserKit to not rename file uploads to
+obscure tmp files, that's why the vendor directory is committed. :-(
