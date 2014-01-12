@@ -7,16 +7,17 @@ $owner = 'klausi';
 // Create a personal access token at https://github.com/settings/applications
 // and paste it here.
 $oauth_token = '1234567890';
-// Repository name on github. This will also be used as the project name on
-// drupal.org.
+// Repository name on github.
 $repo = 'drupal';
 // URL where your webroot/index.php is reachable.
 $webhook_url = 'http://example.com/index.php';
 // Secret to validate incoming webhook requests (you can invent one).
 $secret = 'change me, otherwise you have a security issue!';
+// Incoming requests will be saved to a log file to assist debugging.
+$logfile = '/home/klausi/github_drupalorg.log';
 
 // Your drupal.org user name which should be used to post patches and update
 // issues.
-$drupal_user = 'klausi';
+$drupal_user = 'Github sync';
 // Your drupal.org password.
 $drupal_password = 'secret';
