@@ -16,12 +16,15 @@ $payload = json_encode(array(
 ));
 
 $client = new Client("https://api.github.com");
-$response = $client->post("repos/$owner/$repo/hooks", array(
+$response = $client->post("repos/$owner/$repo/hooks?access_token=$oauth_token", array(
     'Content-type' => 'application/json',
   ), $payload)
-  ->setAuth($owner, $password)
   ->send();
 
 if ($response->getStatusCode() == 201) {
   print "Webhook subscription to repository $repo successful.\n";
+}
+else {
+  print_r($response);
+  print "Webhook subscription failed.\n";
 }
