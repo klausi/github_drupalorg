@@ -49,6 +49,13 @@ function post_comment($issue_id, $comment, $patch) {
   }
   $form["files[field_issue_files_und_$file_nr]"]->upload($patch);
 
+  $status = $form['field_issue_status[und]']->getValue();
+
+  // Set the issue to "needs review" if it is not alreay "needs review" or RTBC.
+  if ($status != 8 && $status != 14) {
+    $form['field_issue_status[und]']->setValue(8);
+  }
+
   $client->submit($form);
 }
 
