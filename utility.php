@@ -6,6 +6,64 @@ use Guzzle\Http\Client as GuzzleClient;
 require 'vendor/autoload.php';
 
 /**
+ * Process a pull request creation or update event.
+ *
+ * @param object $payload
+ *   The received data.
+ */
+function handle_pull_request($payload) {
+  $pull_request_url = $payload->pull_request->html_url;
+
+  switch ($payload->action) {
+    case 'synchronize':
+      $comment = 'Some commits were pushed to the <a href="' . $pull_request_url . '">pull request</a>.';
+      break;
+
+    case 'opened':
+      $comment = 'A <a href="' . $pull_request_url . '">new pull request</a> was opened by <a href="' . $payload->pull_request->user->html_url . '">' . $payload->pull_request->user->login . '</a> for this issue.';
+      break;
+
+    default:
+      // Unknown action, so we just exit.
+      exit;
+  }
+
+  $branch_name = $payload->pull_request->head->ref;
+  $matches = array();
+
+  // Only look at branch names that end in an issue number.
+  if (!preg_match('/([0-9]+)$/', $branch_name, $matches)) {
+    exit;
+  }
+
+  $diff_url = $payload->pull_request->diff_url;
+  // Download the patch.
+  $file = download_file($diff_url, "$branch_name.patch");
+
+  post_comment($matches[0], $comment, $file);
+
+  // Cleanup: remove the downloaded file and the temporary directory it is in.
+  unlink($file);
+  rmdir(dirname($file));
+}
+
+/**
+ * Process a comment that has been created on a pull request.
+ *
+ * @param object $payload
+ *   The received data.
+ */
+function handle_comment($payload) {
+  $comment = 'A <a href="' . $payload->comment->html_url . '">new comment</a> has been posted by <a href="' . $payload->comment->user->html_url . '">' . $payload->comment->user->login . '</a> on ' . $payload->comment->html_url . "\n";
+  $comment .= 'Path: ' . $payload->comment->path . "\n";
+  $comment .= "<code>\n";
+  $comment .= $payload->comment->diff_hunk;
+  $comment .= "</code>\n";
+  $comment .= $payload->comment->body;
+
+}
+
+/**
  * Post a comment to drupal.org.
  *
  * @param int $issue_id
