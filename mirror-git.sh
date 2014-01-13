@@ -19,4 +19,4 @@ fi
 
 cd $DIRECTORY/$SYNC_FOLDER
 git fetch origin
-git push target
+git push --all target
