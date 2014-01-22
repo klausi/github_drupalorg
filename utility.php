@@ -26,7 +26,7 @@ function handle_pull_request($payload) {
       break;
 
     case 'opened':
-      $comment = 'A <a href="' . $pull_request_url . '">new pull request</a> was opened by <a href="' . $payload->pull_request->user->html_url . '">' . $payload->pull_request->user->login . '</a> for this issue.';
+      $comment = '<a href="' . $payload->pull_request->user->html_url . '">' . $payload->pull_request->user->login . '</a> opened a <a href="' . $pull_request_url . '">new pull request</a> for this issue.';
       break;
 
     default:
@@ -59,7 +59,7 @@ function handle_pull_request_comment($payload) {
     exit;
   }
 
-  $comment = 'A <a href="' . $payload->comment->html_url . '">new comment</a> has been posted by <a href="' . $payload->comment->user->html_url . '">' . $payload->comment->user->login . '</a> on ' . $payload->comment->html_url . "\n";
+  $comment = '<a href="' . $payload->comment->user->html_url . '">' . $payload->comment->user->login . '</a> posted a <a href="' . $payload->comment->html_url . '">new comment</a> on ' . $payload->comment->html_url . "\n";
   $comment .= 'Path: ' . $payload->comment->path . "\n";
   $comment .= "<code>\n";
   $comment .= $payload->comment->diff_hunk;
@@ -112,7 +112,7 @@ function handle_issue_comment($payload) {
     exit;
   }
 
-  $comment = 'A <a href="' . $payload->comment->html_url . '">new comment</a> has been posted by <a href="' . $payload->comment->user->html_url . '">' . $payload->comment->user->login . '</a> on ' . $payload->comment->html_url . ".\n\n";
+  $comment = '<a href="' . $payload->comment->user->html_url . '">' . $payload->comment->user->login . '</a> posted a <a href="' . $payload->comment->html_url . '">new comment</a> on ' . $payload->comment->html_url . ".\n\n";
   $comment .= $payload->comment->body;
 
   post_comment($issue_number, $comment);
