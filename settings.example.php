@@ -7,7 +7,8 @@ $owner = 'klausi';
 // Create a personal access token at https://github.com/settings/applications
 // and paste it here.
 $oauth_token = '1234567890';
-// Repository name on github.
+// Repository name on github (belonging to you) where pull requests will be
+// created.
 $repo = 'drupal';
 // URL where your webroot/index.php is reachable.
 $webhook_url = 'http://example.com/index.php';
