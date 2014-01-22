@@ -26,5 +26,10 @@ if (isset($payload->pull_request)) {
   handle_pull_request($payload);
 }
 elseif (isset($payload->comment)) {
-  handle_comment($payload);
+  if (isset($payload->comment->pull_request_url)) {
+    handle_pull_request_comment($payload);
+  }
+  elseif (isset($payload->issue->pull_request->html_url)) {
+    handle_issue_comment($payload);
+  }
 }
