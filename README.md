@@ -17,8 +17,11 @@ Usage
 * Clone your fork locally and create a Git branch where you develop your
   changes. The branch name should end in a number which represents the node ID
   on drupal.org. Example: comment-validation-1234567
-* Create a Pull Request against klausi/drupal. This will trigger the webhook
-  and a comment should be posted automatically to the drupal.org issue.
+* Create a Pull Request against klausi/drupal (not drupal/drupal!). The base
+  fork should be klausi/drupal and a branch such as 8.x, the head fork should be
+  your-name/drupal and a branch such as comment-validation-1234567. This will
+  trigger the webhook and a comment should be posted automatically to the
+  drupal.org issue.
 * Whenever you push new commits to the branch that is connected to the pull
   request an updated patch will be posted to the drupal.org issue.
 * You can comment on the pull request diff or on the pull request issue on
