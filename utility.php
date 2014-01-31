@@ -22,7 +22,7 @@ function handle_pull_request($payload) {
 
   switch ($payload->action) {
     case 'synchronize':
-      $comment = 'Some commits were pushed to the <a href="' . $pull_request_url . '">pull request</a>.';
+      $comment = '<a href="' . $payload->sender->html_url . '">' . $payload->sender->login . '</a> pushed some commits to the <a href="' . $pull_request_url . '">pull request</a>.';
       break;
 
     case 'opened':
