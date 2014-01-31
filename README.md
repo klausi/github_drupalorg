@@ -13,6 +13,9 @@ against klausi/drupal on Github. The repository is updated automatically every
 Usage
 -----
 
+* Find a Drupal core issue on drupal.org that you want to work on. Please note
+  that any general discussion about the issue should be on drupal.org, not on
+  Github.
 * Fork Drupal core from https://github.com/klausi/drupal
 * Clone your fork locally and create a Git branch where you develop your
   changes. The branch name should end in a number which represents the node ID
