@@ -38,7 +38,7 @@ function handle_pull_request($payload) {
   // Download the patch.
   $file = download_file($diff_url, "$issue_number.patch");
 
-  post_comment($issue_number, $comment, $file);
+  post_comment($issue_number, $comment, array($file));
 
   // Cleanup: remove the downloaded file and the temporary directory it is in.
   unlink($file);
@@ -125,10 +125,10 @@ function handle_issue_comment($payload) {
  *   The drupal.org node ID to post the comment to.
  * @param string $comment
  *   Text for the comment field.
- * @param string $patch
- *   Optional, file name to attach as patch.
+ * @param array $files
+ *   Optional, file names to attach as patch.
  */
-function post_comment($issue_id, $comment, $patch = NULL) {
+function post_comment($issue_id, $comment, array $files = array()) {
   static $client;
   if (!$client) {
     // Perform a user login.
@@ -145,8 +145,35 @@ function post_comment($issue_id, $comment, $patch = NULL) {
       exit;
     }
   }
+
   $edit_page = $client->request('GET', "https://drupal.org/node/$issue_id/edit");
-  $form = $edit_page->selectButton('Save')->form();
+  $form = NULL;
+
+  if ($files) {
+    $last_file = end(array_keys($files));
+
+    foreach ($files as $key => $file) {
+      $button = ($last_file == $key) ? 'Save' : 'Upload';
+      $form = $edit_page->selectButton($button)->form();
+
+      // There can be uploaded files already, so we need to iterate to the most
+      // recent file number.
+      $file_nr = 0;
+      while (!isset($form["files[field_issue_files_und_$file_nr]"])) {
+        $file_nr++;
+      }
+
+      $form["files[field_issue_files_und_$file_nr]"]->upload($file);
+
+      if ($key != $last_file) {
+        $edit_page = $client->submit($form);
+      }
+    }
+  }
+
+  if (!isset($form)) {
+    $form = $edit_page->selectButton('Save')->form();
+  }
 
   $form['nodechanges_comment_body[value]']->setValue($comment);
   // We need to HTML entity decode the issue summary here, otherwise we
@@ -154,15 +181,7 @@ function post_comment($issue_id, $comment, $patch = NULL) {
   // summary changes that we don't want to touch.
   $form['body[und][0][value]']->setValue(html_entity_decode($form->get('body[und][0][value]')->getValue(), ENT_QUOTES, 'UTF-8'));
 
-  if ($patch) {
-    // There can be uploaded files already, so we need to iterate to the most
-    // recent file number.
-    $file_nr = 0;
-    while (!isset($form["files[field_issue_files_und_$file_nr]"])) {
-      $file_nr++;
-    }
-    $form["files[field_issue_files_und_$file_nr]"]->upload($patch);
-
+  if ($files) {
     $status = $form['field_issue_status[und]']->getValue();
 
     // Set the issue to "needs review" if it is not alreay "needs review" or RTBC.
