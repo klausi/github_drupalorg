@@ -22,14 +22,9 @@ $payload = json_decode($_POST['payload']);
 
 logger(print_r($payload, TRUE));
 
-if (isset($payload->pull_request)) {
+// Make sure that a pull request object is set in the received event
+// notification and that it was sent on behalf of the repository owner. We don't
+// want to post comments to drupal.org on behalf of other users.
+if (isset($payload->pull_request) && $payload->sender->login == $owner) {
   handle_pull_request($payload);
-}
-elseif (isset($payload->comment)) {
-  if (isset($payload->comment->pull_request_url)) {
-    handle_pull_request_comment($payload);
-  }
-  elseif (isset($payload->issue->pull_request->html_url)) {
-    handle_issue_comment($payload);
-  }
 }

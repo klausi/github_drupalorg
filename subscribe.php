@@ -8,7 +8,7 @@ use Guzzle\Http\Client;
 $payload = json_encode(array(
   'name' => 'web',
   'active' => TRUE,
-  'events' => array('pull_request', 'pull_request_review_comment', 'issue_comment'),
+  'events' => array('pull_request'),
   'config' => array(
     'url' => $webhook_url,
     'secret' => $secret,

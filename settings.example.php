@@ -19,6 +19,6 @@ $logfile = '/home/klausi/github_drupalorg.log';
 
 // Your drupal.org user name which should be used to post patches and update
 // issues.
-$drupal_user = 'Github sync';
+$drupal_user = 'klausi';
 // Your drupal.org password.
 $drupal_password = 'secret';
