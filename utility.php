@@ -146,33 +146,34 @@ function post_comment($issue_id, $comment, $patch = NULL) {
       exit;
     }
   }
-  $edit_page = $client->request('GET', "https://drupal.org/node/$issue_id/edit");
-  $form = $edit_page->selectButton('Save')->form();
 
-  $form['nodechanges_comment_body[value]']->setValue($comment);
+  $issue_page = $client->request('GET', "https://www.drupal.org/node/$issue_id");
+  $comment_form = $issue_page->selectButton('Save')->form();
+
+  $form_values['nodechanges_comment_body[value]'] = $comment;
   // We need to HTML entity decode the issue summary here, otherwise we
   // would post back a double-encoded version, which would result in issue
   // summary changes that we don't want to touch.
-  $form['body[und][0][value]']->setValue(html_entity_decode($form->get('body[und][0][value]')->getValue(), ENT_QUOTES, 'UTF-8'));
+  $form_values['body[und][0][value]'] = html_entity_decode($comment_form->get('body[und][0][value]')->getValue(), ENT_QUOTES, 'UTF-8');
 
   if ($patch) {
     // There can be uploaded files already, so we need to iterate to the most
     // recent file number.
     $file_nr = 0;
-    while (!isset($form["files[field_issue_files_und_$file_nr]"])) {
+    while (!isset($comment_form["files[field_issue_files_und_$file_nr]"])) {
       $file_nr++;
     }
-    $form["files[field_issue_files_und_$file_nr]"]->upload($patch);
+    $comment_form["files[field_issue_files_und_$file_nr]"]->upload($patch);
 
-    $status = $form['field_issue_status[und]']->getValue();
+    $status = $comment_form['field_issue_status[und]']->getValue();
 
     // Set the issue to "needs review" if it is not alreay "needs review" or RTBC.
     if ($status != 8 && $status != 14) {
-      $form['field_issue_status[und]']->setValue(8);
+      $comment_form['field_issue_status[und]']->setValue(8);
     }
   }
 
-  $client->submit($form);
+  $client->submit($comment_form, $form_values);
 }
 
 /**
