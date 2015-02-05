@@ -150,7 +150,7 @@ function post_comment($issue_id, $comment, $patch = NULL) {
   $issue_page = $client->request('GET', "https://www.drupal.org/node/$issue_id");
   $comment_form = $issue_page->selectButton('Save')->form();
 
-  $form_values['nodechanges_comment_body[value]'] = $comment;
+  $form_values['nodechanges_comment[comment_body][und][0][value]'] = $comment;
   // We need to HTML entity decode the issue summary here, otherwise we
   // would post back a double-encoded version, which would result in issue
   // summary changes that we don't want to touch.
