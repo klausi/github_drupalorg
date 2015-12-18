@@ -35,9 +35,19 @@ function handle_pull_request($payload) {
       exit;
   }
 
+  // Get node metadata to append comment number to patch file name.
+  $issue_meta = get_issue_meta($issue_number);
+
+  if (!empty($issue_meta['comment_count'])) {
+    $file_name = $issue_number . '-' . ($issue_meta['comment_count'] + 1) . '.patch';
+  }
+  else {
+    $file_name = "$issue_number.patch";
+  }
+
   $diff_url = $payload->pull_request->diff_url;
   // Download the patch.
-  $file = download_file($diff_url, "$issue_number.patch");
+  $file = download_file($diff_url, $file_name);
 
   post_comment($issue_number, $comment, $file);
 
@@ -233,4 +243,21 @@ function get_issue_number($pull_request) {
     return $matches[0];
   }
   return FALSE;
+}
+
+/**
+ * Use the Drupal.org API to get issue metadata.
+ *
+ * @param int $issue_number
+ *   This nid issue number to look up on d.o.
+ * @return array
+ *   Associative array of the node object on d.o.
+ */
+function get_issue_meta($issue_number) {
+  $url = "https://www.drupal.org/api-d7/node/$issue_number.json";
+
+  $client = new GuzzleClient();
+  $body = $client->get($url)->send()->getBody();
+
+  return json_decode($body, TRUE);
 }
